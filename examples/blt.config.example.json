@@ -1,0 +1,5 @@
+{
+  "schemaBase": "./schema",
+  "distPath": "./dist",
+  "instancesPath": "./schema/instances"
+}

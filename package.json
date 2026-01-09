@@ -1,0 +1,62 @@
+{
+  "name": "@codemarc/blt",
+  "version": "1.0.0",
+  "description": "BLT CLI - Schema management and deployment tools for PostgreSQL/Supabase projects",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "blt": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Tests to be added\" && exit 0"
+  },
+  "keywords": [
+    "blt",
+    "cli",
+    "schema",
+    "postgresql",
+    "supabase",
+    "database",
+    "yaml",
+    "sql",
+    "migration",
+    "deployment"
+  ],
+  "author": "Marc J. Greenberg <marc@Blt.org>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codemarc/blt-cli.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@caporal/core": "^2.0.7",
+    "@supabase/supabase-js": "^2.87.3",
+    "debug": "^4.4.3",
+    "file-type": "^16.5.4",
+    "js-yaml": "^4.1.1",
+    "pg": "^8.16.3",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.12",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.0.0",
+    "@types/pg": "^8.11.0",
+    "typescript": "^5.3.3"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.34.5"
+  }
+}

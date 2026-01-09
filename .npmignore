@@ -1,0 +1,23 @@
+# Source files
+src/
+tsconfig.json
+.gitignore
+
+# Development files
+.vscode/
+.idea/
+*.test.ts
+coverage/
+
+# Examples (keep these)
+!examples/
+
+# User data
+schema/
+instances/
+*.sql
+.env*
+
+# Git
+.git/
+.gitignore
