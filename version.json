@@ -1,0 +1,17 @@
+{
+  "component": "cli",
+  "version": "1.0.0",
+  "runtime": {
+    "type": "node",
+    "version": "v25.2.1"
+  },
+  "build": {
+    "commit": "f6a30f2958d473866c589b185d49814854431c94",
+    "branch": "main",
+    "time": ""
+  },
+  "metadata": {
+    "packageManager": "npm",
+    "packageManagerVersion": "11.6.2"
+  }
+}
