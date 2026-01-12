@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 import { program } from "@caporal/core";
+import checkCommand from "./commands/check";
+import imageCommand from "./commands/image";
+
 import dataCommand from "./commands/data";
 import envCommand from "./commands/env";
 import cleanupCommand from "./commands/cleanup";
 import bucketCommand from "./commands/bucket";
-import imageCommand from "./commands/image";
 import repoCommand from "./commands/repo";
 
 
@@ -13,12 +15,15 @@ program
   .version("1.0.0")
   .description("BLT Core Cli");
 
-  envCommand(program);
-  dataCommand(program);
-  cleanupCommand(program);
-  bucketCommand(program);
+  checkCommand(program);
   imageCommand(program);
-  repoCommand(program);
+
+
+  // envCommand(program);
+  // dataCommand(program);
+  // cleanupCommand(program);
+  // bucketCommand(program);
+  // repoCommand(program);
 
 // If no command is provided, show help
 const args = process.argv.slice(2);

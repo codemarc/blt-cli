@@ -1,7 +1,7 @@
 {
   "name": "@codemarc/blt",
   "version": "1.0.0",
-  "description": "BLT CLI - Schema management and deployment tools for PostgreSQL/Supabase projects",
+  "description": "blt cli",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -9,7 +9,6 @@
   },
   "files": [
     "dist",
-    "examples",
     "README.md",
     "LICENSE"
   ],
@@ -31,7 +30,7 @@
     "migration",
     "deployment"
   ],
-  "author": "Marc J. Greenberg <marc@bltwai.com>",
+  "author": "marc j. greenberg <marc@codemarc.net>",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -44,6 +43,7 @@
     "@caporal/core": "^2.0.7",
     "@supabase/supabase-js": "^2.87.3",
     "debug": "^4.4.3",
+    "dotenv": "^17.2.3",
     "file-type": "^17.1.6",
     "js-yaml": "^4.1.1",
     "pg": "^8.16.3"
