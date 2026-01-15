@@ -64,6 +64,7 @@ Run 'blt version <operation> --help' for more information on a specific command.
 	// Display version string
 	program
 		.command("version string", "Display version as a formatted string")
+		.hide()
 		.option("-d, --date", "Display buildnum as date", { default: false })
 		.option("-o, --only", "Display buildnum as date", { default: false })
 		.option("-s, --short", "Display short version (7-char commit hash)", { default: false })
