@@ -3,8 +3,10 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
+import { generate } from "build-number-generator";
 
 interface VersionInfo {
+  buildnum: string;
   component: string;
   version: string;
   runtime: {
@@ -119,10 +121,22 @@ function detectComponentName(packageJson: { name?: string; version?: string }, r
 }
 
 /**
+ * Generate build number
+ */
+function generateBuildNumber(): string {
+  try {
+    return generate();
+  } catch {
+    return "";
+  }
+}
+
+/**
  * Create a default version.json structure
  */
 function createDefaultVersionInfo(packageJson: { name?: string; version?: string }, rootDir: string): VersionInfo {
   return {
+    buildnum: generateBuildNumber(),
     component: detectComponentName(packageJson, rootDir),
     version: packageJson.version || "0.0.0",
     runtime: {
@@ -173,6 +187,7 @@ export function updateVersion(rootDir: string = process.cwd()): void {
   }
 
   // Update version info
+  versionInfo.buildnum = generateBuildNumber();
   versionInfo.version = packageJson.version || "0.0.0";
   versionInfo.runtime.type = getRuntimeType();
   versionInfo.runtime.version = getRuntimeVersion();
@@ -182,8 +197,17 @@ export function updateVersion(rootDir: string = process.cwd()): void {
   versionInfo.metadata.packageManager = getPackageManager(rootDir);
   versionInfo.metadata.packageManagerVersion = getPackageManagerVersion();
 
-  // Write updated version.json
-  writeFileSync(versionJsonPath, `${JSON.stringify(versionInfo, null, 2)}\n`);
+  // Write updated version.json with buildnum at the top
+  const orderedVersionInfo: VersionInfo = {
+    buildnum: versionInfo.buildnum,
+    component: versionInfo.component,
+    version: versionInfo.version,
+    runtime: versionInfo.runtime,
+    build: versionInfo.build,
+    metadata: versionInfo.metadata,
+  };
+
+  writeFileSync(versionJsonPath, `${JSON.stringify(orderedVersionInfo, null, 2)}\n`);
   console.log("Updated version.json");
 }
 
