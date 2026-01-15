@@ -1,0 +1,23 @@
+# Bun configuration for BLT CLI
+# Documentation: https://bun.sh/docs/runtime/bunfig
+
+[install]
+# Use the registry for faster package installation
+registry = "https://registry.npmjs.org"
+
+# Enable lockfile for reproducible builds
+frozen = false
+
+# Automatically install peer dependencies
+auto = true
+
+[install.cache]
+# Enable shared cache for faster installs
+enabled = true
+
+[run]
+# Automatically install missing packages when running scripts
+autoInstall = true
+
+# Use --bun flag by default for better performance
+bun = true

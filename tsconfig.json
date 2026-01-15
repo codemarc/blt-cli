@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "commonjs",
+    "module": "ESNext",
     "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
@@ -13,8 +13,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node",
-    "types": ["node"]
+    "moduleResolution": "bundler",
+    "types": ["bun-types"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

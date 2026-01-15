@@ -1,6 +1,6 @@
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
-import { homedir } from 'os';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { homedir } from 'node:os';
 
 export interface BltConfig {
   schemaBase: string;
@@ -38,7 +38,7 @@ export function loadConfig(): BltConfig {
         config = { ...config, ...fileConfig };
         console.log(`Loaded config from: ${configPath}`);
         break;
-      } catch (error) {
+      } catch (_error) {
         console.warn(`Failed to parse config file: ${configPath}`);
       }
     }

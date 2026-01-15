@@ -1,11 +1,12 @@
 {
   "name": "@codemarc/blt",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "blt cli",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "dist/blt",
+  "types": "dist/blt.d.ts",
   "bin": {
-    "blt": "dist/index.js"
+    "blt": "dist/blt"
   },
   "files": [
     "dist",
@@ -13,9 +14,11 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "prepublishOnly": "npm run build",
+    "build": "bunx --bun tsc && mv dist/blt.js dist/blt && chmod +x dist/blt",
+    "postbuild": "bun run src/commands/version/update.ts",
+    "dev": "bunx --bun tsc --watch",
+    "start": "bun run src/blt.ts",
+    "prepublishOnly": "bun run build",
     "test": "echo \"Tests to be added\" && exit 0"
   },
   "keywords": [
@@ -37,7 +40,7 @@
     "url": "https://github.com/codemarc/blt-cli.git"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "bun": ">=1.0.0"
   },
   "dependencies": {
     "@caporal/core": "^2.0.7",
@@ -53,6 +56,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.0.0",
     "@types/pg": "^8.11.0",
+    "bun-types": "^1.0.0",
     "typescript": "^5.3.3"
   },
   "optionalDependencies": {

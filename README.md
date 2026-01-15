@@ -10,6 +10,8 @@
 ## Installation
 
 ```bash
+bun install -g @codemarc/blt
+# or
 npm install -g @codemarc/blt
 # or
 yarn global add @codemarc/blt
@@ -50,7 +52,7 @@ blt image sharpen ./photo.jpg
 
 ### Environment Commands
 
-#### `blt check [buckets]`
+#### `blt check [all]`
 
 Check the environment setup
 
@@ -144,27 +146,37 @@ The `blt check` command looks for a `.env` file in the current directory and ver
 Sharp is an optional dependency. Install manually if needed:
 
 ```bash
+bun add sharp
+# or
 npm install sharp
 ```
 
 ## Development
 
-This package is built with TypeScript and targets Node.js 18+.
+This package is built with TypeScript and uses Bun as the runtime.
 
 ### Building from Source
 
 ```bash
 git clone https://github.com/codemarc/blt-cli.git
 cd blt-cli
-npm install
-npm run build
-npm link
+bun install
+bun run build
+bun link
+```
+
+### Running in Development
+
+You can run the CLI directly from source using Bun:
+
+```bash
+bun run src/index.ts check
 ```
 
 ### Testing
 
 ```bash
-npm test
+bun test
 ```
 
 ## License
@@ -173,7 +185,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Author
 
-Marc J. Greenberg <marc@Blt.org>
+Marc J. Greenberg <marc@bltwai.com>
 
 ## Repository
 

@@ -18,7 +18,7 @@ export type RuntimeType = 'node' | 'bun' | 'deno';
 /**
  * Supported package manager types
  */
-export type PackageManagerType = 'npm' | 'bun' | 'pnpm';
+export type PackageManagerType = 'npm' | 'bun' | 'pnpm' | 'deno';
 
 /**
  * Runtime information
@@ -46,7 +46,7 @@ export interface BuildInfo {
  * Package manager metadata
  */
 export interface MetadataInfo {
-  /** Package manager type (npm, bun, or pnpm) */
+  /** Package manager type (npm, bun, pnpm, or deno) */
   packageManager: PackageManagerType;
   /** Package manager version */
   packageManagerVersion: string;
