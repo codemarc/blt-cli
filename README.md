@@ -58,6 +58,8 @@ blt version update
 ```
 
 This command creates or updates a `version.json` file in the current directory with:
+- Build number (generated using `build-number-generator`)
+- Component name (detected from `package.json`)
 - Component version from `package.json`
 - Runtime information (Bun/Node version)
 - Git commit hash and branch
@@ -170,6 +172,7 @@ This command:
 - Updates existing `version.json` with current information
 - Works from any directory (uses current working directory)
 - Detects component name from `package.json`
+- Generates a unique build number for each update
 - Includes git commit, branch, and build timestamp
 - Captures runtime and package manager versions
 
@@ -177,6 +180,7 @@ This command:
 
 ```json
 {
+  "buildnum": "260115212",
   "component": "cli",
   "version": "1.1.0",
   "runtime": {
@@ -184,9 +188,9 @@ This command:
     "version": "1.3.4"
   },
   "build": {
-    "commit": "abc123...",
+    "commit": "c79d284f8d2a3df00af85740cc64010587d12b08",
     "branch": "main",
-    "time": "2026-01-15T03:52:37.552Z"
+    "time": "2026-01-15T12:04:31.662Z"
   },
   "metadata": {
     "packageManager": "bun",
@@ -195,12 +199,26 @@ This command:
 }
 ```
 
+**Version.json Fields:**
+
+- `buildnum`: Unique build number generated using `build-number-generator` (e.g., "260115212")
+- `component`: Component name (cli, data, pos, devops, deploy, gateway)
+- `version`: Semantic version from `package.json`
+- `runtime.type`: Runtime type ("bun" or "node")
+- `runtime.version`: Runtime version (e.g., "1.3.4" for Bun, "v25.2.1" for Node)
+- `build.commit`: Full git commit hash
+- `build.branch`: Current git branch name
+- `build.time`: ISO 8601 timestamp of when version.json was updated
+- `metadata.packageManager`: Package manager name ("bun" or "npm")
+- `metadata.packageManagerVersion`: Package manager version
+
 The command automatically detects the component name from your `package.json`:
 - `@codemarc/blt` or `blt-cli` → `cli`
 - `blt-core-pos` → `pos`
 - `blt-core-devops` → `devops`
 - `data` → `data`
 - `deploy` → `deploy`
+- `gateway` → `gateway`
 
 ## Environment Variables
 
@@ -251,15 +269,23 @@ bun run src/blt.ts check
 
 ### Version Management
 
-The CLI includes a postbuild script that automatically updates `version.json` after each build. You can also manually update version information:
+The CLI includes a postbuild script that automatically updates `version.json` after each build. The build number is automatically generated and incremented on each update.
+
+You can manually update version information:
 
 ```bash
-# From the CLI project directory
-bun run src/commands/version/update.ts
-
-# Or using the CLI command (from any directory)
+# From any directory (updates version.json in current directory)
 blt version update
+
+# Or from the CLI project directory, run the script directly
+bun run src/commands/version/update.ts
 ```
+
+**Note:** The `blt version update` command works from any directory. It will:
+- Read `package.json` from the current directory
+- Create or update `version.json` in the current directory
+- Use git information from the current directory's repository
+- Generate a new build number for each update
 
 ### Testing
 

@@ -110,6 +110,7 @@ function detectComponentName(packageJson: { name?: string; version?: string }, r
     if (lastPart === "blt-core-devops") return "devops";
     if (lastPart === "data") return "data";
     if (lastPart === "deploy") return "deploy";
+    if (lastPart === "gateway") return "gateway";
     
     return lastPart;
   }
