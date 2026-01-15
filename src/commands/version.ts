@@ -28,6 +28,7 @@ Run 'blt version <operation> --help' for more information on a specific command.
 	// Update version.json
 	program
 		.command("version update", "Update version.json with current build information")
+		.hide()
 		.action(async ({ logger }: { logger: Logger }) => {
 			try {
 				// Use current working directory where the command is run

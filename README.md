@@ -6,6 +6,7 @@
 
 - **Environment Checking**: Verify environment setup and configuration
 - **Image Processing**: WebP conversion, sharpening, color manipulation, and enhancement
+- **Version Management**: Update and manage version.json files with build information
 
 ## Installation
 
@@ -47,6 +48,21 @@ Sharpen an image:
 ```bash
 blt image sharpen ./photo.jpg
 ```
+
+### Version Management
+
+Update version.json with current build information:
+
+```bash
+blt version update
+```
+
+This command creates or updates a `version.json` file in the current directory with:
+- Component version from `package.json`
+- Runtime information (Bun/Node version)
+- Git commit hash and branch
+- Build timestamp
+- Package manager information
 
 ## Commands
 
@@ -131,6 +147,61 @@ blt image color ./logo.png --from red --to blue --tolerance 30
 - `-q, --quality <quality>`: WebP quality 0-100 (default: 90)
 - `-z, --tolerance <tolerance>`: Color matching tolerance 0-100 (default: 30)
 
+### Version Commands
+
+#### `blt version`
+
+Show version management help
+
+```bash
+blt version
+```
+
+#### `blt version update`
+
+Update `version.json` with current build information
+
+```bash
+blt version update
+```
+
+This command:
+- Creates `version.json` if it doesn't exist
+- Updates existing `version.json` with current information
+- Works from any directory (uses current working directory)
+- Detects component name from `package.json`
+- Includes git commit, branch, and build timestamp
+- Captures runtime and package manager versions
+
+**Example `version.json` output:**
+
+```json
+{
+  "component": "cli",
+  "version": "1.1.0",
+  "runtime": {
+    "type": "bun",
+    "version": "1.3.4"
+  },
+  "build": {
+    "commit": "abc123...",
+    "branch": "main",
+    "time": "2026-01-15T03:52:37.552Z"
+  },
+  "metadata": {
+    "packageManager": "bun",
+    "packageManagerVersion": "1.3.4"
+  }
+}
+```
+
+The command automatically detects the component name from your `package.json`:
+- `@codemarc/blt` or `blt-cli` → `cli`
+- `blt-core-pos` → `pos`
+- `blt-core-devops` → `devops`
+- `data` → `data`
+- `deploy` → `deploy`
+
 ## Environment Variables
 
 ### Environment Checking
@@ -165,12 +236,29 @@ bun run build
 bun link
 ```
 
+The build process automatically:
+- Compiles TypeScript to JavaScript
+- Updates `version.json` with current build information
+- Sets execute permissions on the built binary
+
 ### Running in Development
 
 You can run the CLI directly from source using Bun:
 
 ```bash
-bun run src/index.ts check
+bun run src/blt.ts check
+```
+
+### Version Management
+
+The CLI includes a postbuild script that automatically updates `version.json` after each build. You can also manually update version information:
+
+```bash
+# From the CLI project directory
+bun run src/commands/version/update.ts
+
+# Or using the CLI command (from any directory)
+blt version update
 ```
 
 ### Testing
