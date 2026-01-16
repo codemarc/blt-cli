@@ -23,7 +23,7 @@ Run 'blt version <operation> --help' for more information on a specific command.
 `;
 
 	program
-		.command("version", "version management utilities")
+		.command("version", "version management")
 		.help(versionHelpText)
 		.action(() => {
 			console.log(versionHelpText);

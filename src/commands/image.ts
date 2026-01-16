@@ -22,7 +22,7 @@ Run 'blt image <operation> --help' for more information on a specific command.
 `;
 
 	program
-		.command("image", "image manipulation utilities")
+		.command("image", "image manipulation")
 		.help(imageHelpText)
 		.action(() => {
 			console.log(imageHelpText);

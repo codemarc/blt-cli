@@ -2,6 +2,7 @@
 import { program } from "@caporal/core";
 import imageCommand from "./commands/image";
 import versionCommand from "./commands/version";
+import bucketCommand from "./commands/bucket";
 
 import { join, dirname } from "node:path";
 import { readFileSync } from "node:fs";
@@ -22,6 +23,7 @@ program.name("blt")
 
   imageCommand(program);
   versionCommand(program);
+  bucketCommand(program);
 
 // If no command is provided, show help
 const args = process.argv.slice(2);
