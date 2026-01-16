@@ -1,19 +1,7 @@
 import type { Program, Logger } from "@caporal/core";
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
 import { updateVersion } from "./version/update";
-import { format as formatBuildNumber } from 'build-number-generator'
-
-interface VersionInfo {
-  buildnum: string;
-  component: string;
-  version: string;
-  build: {
-    commit: string;
-    branch: string;
-    time: string;
-  };
-}
+import { displayVersionString } from "./version/string";
+import { generateVersionSQL } from "./version/sql";
 
 /**
  * Register version commands with the CLI program
@@ -71,52 +59,7 @@ Run 'blt version <operation> --help' for more information on a specific command.
 		.option("-s, --short", "Display short version (7-char commit hash)", { default: false })
 		.option("-f, --full", "Display full version (full commit hash)", { default: false })
 		.action(async ({ options, logger }: { options: { short?: boolean; full?: boolean; date?: boolean; only?: boolean }; logger: Logger }) => {
-			try {
-				const rootDir = process.cwd();
-				const versionJsonPath = join(rootDir, "version.json");
-
-				if (!existsSync(versionJsonPath)) {
-					logger.error("version.json not found. Run 'blt version update' first.");
-					process.exit(1);
-				}
-
-				const versionInfo: VersionInfo = JSON.parse(readFileSync(versionJsonPath, "utf-8"));
-				
-				// Determine format: default to short, --full overrides to full
-				const useFull = options.full === true;
-				const useShort = options.short === true;
-				const useDate = options.date === true;
-				const useOnly = options.only === true;
-
-				let versionString: string;
-				let buildnumString: string;
-
-				if (useDate) {
-					buildnumString = formatBuildNumber(versionInfo.buildnum);
-				} else {
-					buildnumString = versionInfo.buildnum;
-				}
-
-
-				if (useFull) {
-					// Full format: component vversion.buildnum - branch hash(full-commit)
-					versionString = `${versionInfo.component} v${versionInfo.version} ${buildnumString} - ${versionInfo.build.branch} hash(${versionInfo.build.commit})`;
-				} else if (useShort) {
-					versionString = `${versionInfo.component} v${versionInfo.version} ${buildnumString}`;
-				} else if (useOnly) {
-					versionString = buildnumString;
-				} else {
-					// defaultShort format: component vversion buildnum - branch (short-commit)
-					const shortCommit = versionInfo.build.commit?.substring(0, 7) ?? "";
-					versionString = `${versionInfo.component} v${versionInfo.version} ${buildnumString} - ${versionInfo.build.branch} (${shortCommit})`;
-				}
-				
-				console.log(versionString);
-			} catch (error) {
-				const message = error instanceof Error ? error.message : String(error);
-				logger.error(`Failed to read version.json: ${message}`);
-				process.exit(1);
-			}
+			displayVersionString(options, logger);
 		});
 
 	// Generate SQL to upsert version.json to settings table
@@ -124,37 +67,6 @@ Run 'blt version <operation> --help' for more information on a specific command.
 		.command("version sql", "Generate SQL to upsert version.json to settings table")
 		.hide()
 		.action(async ({ logger }: { logger: Logger }) => {
-			try {
-				const rootDir = process.cwd();
-				const versionJsonPath = join(rootDir, "version.json");
-
-				if (!existsSync(versionJsonPath)) {
-					logger.error("version.json not found. Run 'blt version update' first.");
-					process.exit(1);
-				}
-
-				const versionInfo = JSON.parse(readFileSync(versionJsonPath, "utf-8"));
-				
-				// Convert version.json to JSON string for SQL
-				const propsJson = JSON.stringify(versionInfo);
-				
-				// Escape single quotes in JSON for SQL
-				const escapedPropsJson = propsJson.replace(/'/g, "''");
-				
-				// Generate SQL upsert statement
-				// Match format used in other settings INSERT statements (no casts in VALUES)
-				const sql = `INSERT INTO settings (id, name, kind, props) VALUES
-('00000000-0000-0000-0000-ffffffffffff', 'version', 'meta', '${escapedPropsJson}'::jsonb)
-ON CONFLICT (id) DO UPDATE SET
-    name = COALESCE(EXCLUDED.name, settings.name),
-    kind = COALESCE(EXCLUDED.kind, settings.kind),
-    props = COALESCE(EXCLUDED.props, settings.props);`;
-				
-				console.log(sql);
-			} catch (error) {
-				const message = error instanceof Error ? error.message : String(error);
-				logger.error(`Failed to generate SQL: ${message}`);
-				process.exit(1);
-			}
+			generateVersionSQL(logger);
 		});
 }
