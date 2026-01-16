@@ -1,5 +1,5 @@
 {
-  "buildnum": "260115251",
+  "buildnum": "260115523",
   "component": "cli",
   "version": "1.1.0",
   "runtime": {
@@ -7,9 +7,9 @@
     "version": "1.3.4"
   },
   "build": {
-    "commit": "c79d284f8d2a3df00af85740cc64010587d12b08",
+    "commit": "b013dcacfdc37fe744f105c2815197b4b13fd436",
     "branch": "main",
-    "time": "2026-01-15T13:23:28.304Z"
+    "time": "2026-01-15T22:26:24.375Z"
   },
   "metadata": {
     "packageManager": "bun",

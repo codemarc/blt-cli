@@ -1,14 +1,7 @@
 #!/usr/bin/env bun
 import { program } from "@caporal/core";
-// import bucketCommand from "./commands/bucket";
-// import checkCommand from "./commands/check";
-// import cleanupCommand from "./commands/cleanup";
-// import dataCommand from "./commands/data";
-// import envCommand from "./commands/env";
 import imageCommand from "./commands/image";
 import versionCommand from "./commands/version";
-
-// 0import repoCommand from "./commands/repo";
 
 import { join, dirname } from "node:path";
 import { readFileSync } from "node:fs";
@@ -22,7 +15,6 @@ export function getPackageVersion(): string {
   const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
   return packageJson.version;
 }
-
 
 program.name("blt")
 	.version(getPackageVersion())
