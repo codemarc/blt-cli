@@ -1,8 +1,12 @@
 #!/usr/bin/env bun
 import { program } from "@caporal/core";
+import bucketCommand from "./commands/bucket";
+import buildCommand from "./commands/build";
+import deployCommand from "./commands/deploy";
 import imageCommand from "./commands/image";
 import versionCommand from "./commands/version";
-import bucketCommand from "./commands/bucket";
+import showCommand from "./commands/show";
+import cleanupCommand from "./commands/cleanup";
 
 import { join, dirname } from "node:path";
 import { readFileSync } from "node:fs";
@@ -23,13 +27,15 @@ program.name("blt")
 
   imageCommand(program);
   versionCommand(program);
+  buildCommand(program);
+  deployCommand(program);
   bucketCommand(program);
+  showCommand(program);
+  cleanupCommand(program);
 
 // If no command is provided, show help
 const args = process.argv.slice(2);
 if (args.length === 0) {
   process.argv.push('--help');
 }
-
-
 program.run();
