@@ -94,6 +94,20 @@ export async function showEnv(): Promise<void> {
       },
 
       {
+        name: "VITE_SUPABASE_URL",
+        description: "Supabase admin key",
+        value: process.env.VITE_SUPABASE_URL,
+        sensitive: false,
+      },
+
+      {
+        name: "VITE_SUPABASE_ANON_KEY",
+        description: "Supabase anonymous key",
+        value: process.env.VITE_SUPABASE_ANON_KEY,
+        sensitive: false,
+      },
+      
+      {
         name: "STRIPE_SECRET_KEY",
         description: "Stripe secret key",
         value: process.env.STRIPE_SECRET_KEY,
