@@ -1,15 +1,15 @@
 {
-  "buildnum": "260120420",
+  "buildnum": "260120665",
   "component": "cli",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "runtime": {
     "type": "bun",
     "version": "1.3.4"
   },
   "build": {
-    "commit": "e1b48ac27375cd0bd7d777f6c1669e39cad8dfc6",
+    "commit": "4f222335a0c3b4cb86d4827f8d7d4e34731198ab",
     "branch": "main",
-    "time": "2026-01-20T19:00:09.421Z"
+    "time": "2026-01-21T03:10:39.537Z"
   },
   "metadata": {
     "packageManager": "bun",

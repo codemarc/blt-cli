@@ -3,6 +3,7 @@ import { showSchema } from "./show/schema";
 import { showRows } from "./show/rows";
 import { showEnv } from "./show/env";
 import { showDb } from "./show/db";
+import { showRepo } from "./show/repo";
 /**
  * Register show commands with the CLI program
  */
@@ -18,6 +19,7 @@ Available operations:
   schema      Get information about the schema
   env         Display blt core environment variables
   db          Display version from database (same format as version string)
+  repo        Display valid repositories in the current working set
 
 Run 'blt show <operation> --help' for more information on a specific command.
 `;
@@ -70,5 +72,13 @@ Run 'blt show <operation> --help' for more information on a specific command.
     .option("-f, --full", "Display full version (full commit hash)", { default: false })
     .action(async ({ options, logger }: { options: { short?: boolean; full?: boolean; date?: boolean; only?: boolean }; logger: Logger }) => {
       await showDb(options, logger);
+    });
+
+  program
+    .command("show repo", "Display valid repositories in the current working set")
+    .hide()
+    .option("-s, --ssh", "Display SSH URLs instead of HTTPS URLs", { default: false })
+    .action(async ({ options, logger }: { options: { ssh?: boolean }; logger: Logger }) => {
+      await showRepo(options, logger);
     });
 }
