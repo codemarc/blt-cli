@@ -39,16 +39,16 @@ const REPOSITORIES: Repository[] = [
     description: "device gateway",
   },
   {
-    name: "devops",
-    url: "https://github.com/bltcore-com/blt-core-devops.git",
-    sshUrl: "git@github.com:bltcore-com/blt-core-devops.git",
-    description: "devops scripts",
-  },
-  {
     name: "deploy",
     url: "https://github.com/bltcore-com/deploy.git",
     sshUrl: "git@github.com:bltcore-com/deploy.git",
     description: "deployment scripts",
+  },
+  {
+    name: "customers",
+    url: "https://github.com/bltcore-com/customers.git",
+    sshUrl: "git@github.com:bltcore-com/customers.git",
+    description: "customer repository",
   },
 ];
 
