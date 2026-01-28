@@ -162,6 +162,11 @@ export async function pdfBinderCommand(
       }
     }
 
+    if (totalPages === 0) {
+      console.error("No pages were successfully processed. Output file not created.");
+      process.exit(1);
+    }
+
     // Save the merged PDF
     const mergedPdfBytes = await mergedPdf.save();
     await Bun.write(outputPath, mergedPdfBytes);

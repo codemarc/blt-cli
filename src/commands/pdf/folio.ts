@@ -149,8 +149,8 @@ export async function pdfFolioCommand(
 
     // Create a new PDF document
     const mergedPdf = await PDFDocument.create();
-    const font = await mergedPdf.embedFont(StandardFonts.Helvetica);
-    const boldFont = await mergedPdf.embedFont(StandardFonts.HelveticaBold);
+    //const font = await mergedPdf.embedFont(StandardFonts.Helvetica);
+    // const boldFont = await mergedPdf.embedFont(StandardFonts.HelveticaBold);
 
     // Track TOC entries
     const tocEntries: Array<{ title: string; page: number; pageCount: number }> = [];
@@ -262,7 +262,7 @@ export async function pdfFolioCommand(
       // This is a workaround since pdf-lib doesn't have a reorder method
       // We'll need to create a new document with pages in the right order
       const finalPdf = await PDFDocument.create();
-      const finalFont = await finalPdf.embedFont(StandardFonts.Helvetica);
+      //const finalFont = await finalPdf.embedFont(StandardFonts.Helvetica);
       
       // Copy TOC pages first
       for (const tocPage of tocPages) {

@@ -23,9 +23,6 @@ function substituteEnvVars(str: string): string {
 
 /**
  * Recursively substitute environment variables in all string values.
- */
-/**
- * Recursively substitute environment variables in all string values.
  * 
  * NOTE: If you see `${SUPABASE_URL}` (or any `${VAR}`) in your *output*,
  * instead of the actual env value, it means `process.env.VAR` was undefined
