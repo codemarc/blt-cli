@@ -59,6 +59,13 @@ export async function showEnv(): Promise<void> {
 			},
 
 			{
+				name: "SUPABASE_URL",
+				description: "Supabase URL",
+				value: process.env.SUPABASE_URL,
+				sensitive: false,
+			},
+
+			{
 				name: "SUPABASE_DATA_API",
 				description: "Supabase Data API URL",
 				value: process.env.SUPABASE_DATA_API,

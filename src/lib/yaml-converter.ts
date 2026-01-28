@@ -24,6 +24,19 @@ function substituteEnvVars(str: string): string {
 /**
  * Recursively substitute environment variables in all string values.
  */
+/**
+ * Recursively substitute environment variables in all string values.
+ * 
+ * NOTE: If you see `${SUPABASE_URL}` (or any `${VAR}`) in your *output*,
+ * instead of the actual env value, it means `process.env.VAR` was undefined
+ * at the time this function ran. This likely means the environment variable
+ * wasn't loaded, set, or visible to the Bun/Node.js process at runtime.
+ *
+ * Bun automatically loads from .env, but if you're running this with Node.js,
+ * you need to ensure dotenv is loaded, or the env values are set in the OS.
+ * 
+ * If you want to debug, try logging `process.env` or check how you run Bun/Node.
+ */
 function processEnvVars(value: unknown): unknown {
   if (typeof value === "string") return substituteEnvVars(value);
   if (Array.isArray(value)) return value.map(processEnvVars);
