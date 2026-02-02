@@ -1,12 +1,17 @@
 # @codemarc/blt
 
-> BLT CLI - Command-line tools for environment checking and image processing
+> BLT CLI — Command-line tools for image processing, PDF manipulation, storage, schema/data build and deploy, and version management.
 
 ## Features
 
-- **Environment Checking**: Verify environment setup and configuration
-- **Image Processing**: WebP conversion, sharpening, color manipulation, and enhancement
-- **Version Management**: Update and manage version.json files with build information
+- **Image**: WebP conversion, sharpening, color manipulation, and enhancement
+- **PDF**: Combine PDFs (binder), create folios with page numbers and table of contents
+- **Version**: Update and manage `version.json`, format version strings, generate version SQL
+- **Build**: Build schema from DDL files, build data from instance directory
+- **Deploy**: Deploy schema/data from SQL files, run a single SQL file
+- **Bucket**: Supabase storage — list buckets, list/upload/download files, get URLs
+- **Show**: Schema info, row counts, env vars, DB version, repo list
+- **Cleanup**: Remove generated SQL/instance files, clean infrequently used YAML tags
 
 ## Installation
 
@@ -22,73 +27,48 @@ pnpm add -g @codemarc/blt
 
 ## Quick Start
 
-### Check Environment
-
-Verify your environment setup:
-
 ```bash
-blt check
-```
-
-This command checks for:
-- `.env` file existence
-- `SMASH_KEY` environment variable
-- Other environment configuration
-
-### Process Images
-
-Convert an image to WebP:
-
-```bash
+# Convert an image to WebP
 blt image convert ./photo.jpg
-```
 
-Sharpen an image:
+# Combine PDFs into one file
+blt pdf binder output.pdf file1.pdf file2.pdf
 
-```bash
-blt image sharpen ./photo.jpg
-```
-
-### Version Management
-
-Update version.json with current build information:
-
-```bash
+# Update version.json in current directory
 blt version update
+
+# List Supabase storage buckets
+blt bucket names
+
+# Show schema info
+blt show schema
+
+# Deploy schema from .sql files
+blt deploy schema
 ```
 
-This command creates or updates a `version.json` file in the current directory with:
-- Build number (generated using `build-number-generator`)
-- Component name (detected from `package.json`)
-- Component version from `package.json`
-- Runtime information (Bun/Node version)
-- Git commit hash and branch
-- Build timestamp
-- Package manager information
+## Commands Overview
 
-## Commands
+| Command       | Description                          |
+|---------------|--------------------------------------|
+| `blt image`   | Convert, sharpen, enhance, recolor    |
+| `blt pdf`     | Binder (combine), folio (TOC + pages)|
+| `blt version` | Update, string, sql                  |
+| `blt build`   | Schema (DDL), data (instance)        |
+| `blt deploy`  | Schema, data, sql file               |
+| `blt bucket`  | names, list, upload, download, url   |
+| `blt show`    | schema, counts, env, db, repo       |
+| `blt cleanup` | generated, tags                      |
 
-### Environment Commands
+Run `blt <command>` with no subcommand for help (e.g. `blt image`, `blt pdf`).
 
-#### `blt check [all]`
+---
 
-Check the environment setup
+## Image Commands
 
-```bash
-blt check
-blt check all
-```
+### `blt image convert <input>`
 
-This command verifies:
-- Presence of `.env` file
-- `SMASH_KEY` environment variable
-- Other environment configuration
-
-### Image Commands
-
-#### `blt image convert <input>`
-
-Convert images to WebP format
+Convert images to WebP format.
 
 ```bash
 blt image convert ./photo.jpg
@@ -97,14 +77,15 @@ blt image convert ./photo.jpg --quality 90 --output ./photo.webp
 ```
 
 **Options:**
-- `-o, --output <path>`: Output file or directory (default: same location as input)
-- `-q, --quality <quality>`: WebP quality 0-100 (default: 80)
-- `-r, --recursive`: Process directories recursively
-- `--overwrite`: Overwrite existing files
 
-#### `blt image sharpen <input>`
+- `-o, --output <path>` — Output file or directory (default: same as input)
+- `-q, --quality <quality>` — WebP quality 0–100 (default: 80)
+- `-r, --recursive` — Process directories recursively
+- `--overwrite` — Overwrite existing files
 
-Sharpen image edges
+### `blt image sharpen <input>`
+
+Sharpen image edges.
 
 ```bash
 blt image sharpen ./photo.jpg
@@ -112,16 +93,17 @@ blt image sharpen ./images/ --recursive
 ```
 
 **Options:**
-- `-o, --output <path>`: Output file or directory (default: same location as input)
-- `-s, --sigma <sigma>`: Sigma value for sharpening 0.3-1000 (default: 1.0)
-- `-f, --flat <flat>`: Flat threshold 0-10000 (default: 1.0)
-- `-j, --jagged <jagged>`: Jagged threshold 0-10000 (default: 2.0)
-- `-r, --recursive`: Process directories recursively
-- `--overwrite`: Overwrite existing files
 
-#### `blt image enhance <input>`
+- `-o, --output <path>` — Output file or directory
+- `-s, --sigma <sigma>` — Sigma for sharpening 0.3–1000 (default: 1.0)
+- `-f, --flat <flat>` — Flat threshold 0–10000 (default: 1.0)
+- `-j, --jagged <jagged>` — Jagged threshold 0–10000 (default: 2.0)
+- `-r, --recursive` — Process directories recursively
+- `--overwrite` — Overwrite existing files
 
-Enhance avatar images for dark or light mode
+### `blt image enhance <input>`
+
+Enhance avatar images for dark or light mode.
 
 ```bash
 blt image enhance ./avatar.jpg --mode dark
@@ -129,13 +111,14 @@ blt image enhance ./avatar.jpg --mode light --quality 95
 ```
 
 **Options:**
-- `-m, --mode <mode>`: Enhancement mode: `dark` or `light` (default: dark)
-- `-o, --output <path>`: Output file path (default: overwrites input)
-- `-q, --quality <quality>`: WebP quality 0-100 (default: 90)
 
-#### `blt image color <input>`
+- `-m, --mode <mode>` — `dark` or `light` (default: dark)
+- `-o, --output <path>` — Output path (default: overwrites input)
+- `-q, --quality <quality>` — WebP quality 0–100 (default: 90)
 
-Change the base color of an image
+### `blt image color <input>`
+
+Change the base color of an image.
 
 ```bash
 blt image color ./logo.png --to blue
@@ -143,50 +126,107 @@ blt image color ./logo.png --from red --to blue --tolerance 30
 ```
 
 **Options:**
-- `-t, --to <color>`: Target color (hex, rgb, or color name)
-- `-f, --from <color>`: Source color to replace (hex, rgb, or color name). If not specified, detects dominant color
-- `-o, --output <path>`: Output file path (default: overwrites input)
-- `-q, --quality <quality>`: WebP quality 0-100 (default: 90)
-- `-z, --tolerance <tolerance>`: Color matching tolerance 0-100 (default: 30)
 
-### Version Commands
+- `-t, --to <color>` — Target color (hex, rgb, or name)
+- `-f, --from <color>` — Source color to replace; if omitted, dominant color is used
+- `-o, --output <path>` — Output path (default: overwrites input)
+- `-q, --quality <quality>` — WebP quality 0–100 (default: 90)
+- `-z, --tolerance <tolerance>` — Color matching tolerance 0–100 (default: 30)
 
-#### `blt version`
+---
 
-Show version management help
+## PDF Commands
+
+PDF manipulation uses the `blt pdf` namespace. Inputs can be files and/or directories (optionally recursive). Non-PDF files are skipped with a warning. Files are processed in alphabetical order.
+
+**Dependency:** `pdf-lib`. If needed: `bun install` (or `npm install`).
+
+### `blt pdf binder <output> <inputs...>`
+
+Combine multiple PDFs into a single document.
 
 ```bash
-blt version
+# Two files
+blt pdf binder output.pdf file1.pdf file2.pdf
+
+# All PDFs in a directory
+blt pdf binder output.pdf /path/to/pdfs/
+
+# Mix files and directories (recursive)
+blt pdf binder output.pdf file1.pdf /path/to/pdfs/ file2.pdf -r
+
+# Overwrite existing output
+blt pdf binder output.pdf *.pdf --overwrite
 ```
 
-#### `blt version update`
+**Arguments:**
 
-Update `version.json` with current build information
+- `<output>` — Output PDF path
+- `<inputs...>` — Input files and/or directories (can be mixed)
+
+**Options:**
+
+- `-r, --recursive` — Process directories recursively
+- `--overwrite` — Overwrite existing output file
+
+**Behavior:** Mix files and directories; non-PDFs skipped with a warning; progress and total page/file count are shown.
+
+### `blt pdf folio <output> <inputs...>`
+
+Create a folio with automatic page numbers and an optional table of contents.
+
+```bash
+# Folio with TOC and page numbers
+blt pdf folio report.pdf *.pdf
+
+# Start page number at 10
+blt pdf folio report.pdf chapter1.pdf chapter2.pdf --start-page 10
+
+# No table of contents
+blt pdf folio report.pdf /path/to/pdfs/ --no-toc
+
+# Recursive directories
+blt pdf folio complete.pdf /docs/ /appendices/ -r
+```
+
+**Arguments:**
+
+- `<output>` — Output PDF path
+- `<inputs...>` — Input files and/or directories (can be mixed)
+
+**Options:**
+
+- `-r, --recursive` — Process directories recursively
+- `--overwrite` — Overwrite existing output file
+- `--no-toc` — Skip table of contents
+- `--start-page <number>` — First page number (default: 1)
+
+**Behavior:** Page numbers at bottom center; TOC at start (unless `--no-toc`) with document names and starting pages; professional formatting. Page numbers use light gray (50% opacity). TOC auto-sized (~40 entries per page). `.DS_Store` and hidden files are skipped.
+
+**Technical:** Uses `pdf-lib` (^1.17.1). Shell wildcards (e.g. `*.pdf`) and special characters in filenames are supported.
+
+---
+
+## Version Commands
+
+### `blt version update`
+
+Create or update `version.json` in the current directory with build information.
 
 ```bash
 blt version update
 ```
 
-This command:
-- Creates `version.json` if it doesn't exist
-- Updates existing `version.json` with current information
-- Works from any directory (uses current working directory)
-- Detects component name from `package.json`
-- Generates a unique build number for each update
-- Includes git commit, branch, and build timestamp
-- Captures runtime and package manager versions
+Fills in: build number (from build-number-generator), component name (from `package.json`), component version, runtime (Bun/Node), git commit and branch, build timestamp, package manager info.
 
-**Example `version.json` output:**
+**Example `version.json`:**
 
 ```json
 {
   "buildnum": "260115212",
   "component": "cli",
   "version": "1.1.0",
-  "runtime": {
-    "type": "bun",
-    "version": "1.3.4"
-  },
+  "runtime": { "type": "bun", "version": "1.3.4" },
   "build": {
     "commit": "c79d284f8d2a3df00af85740cc64010587d12b08",
     "branch": "main",
@@ -199,40 +239,260 @@ This command:
 }
 ```
 
-**Version.json Fields:**
+**Component mapping:** `@codemarc/blt` / `blt-cli` → `cli`; `blt-core-pos` → `pos`; `blt-core-devops` → `devops`; `data` → `data`; `deploy` → `deploy`; `gateway` → `gateway`.
 
-- `buildnum`: Unique build number generated using `build-number-generator` (e.g., "260115212")
-- `component`: Component name (cli, data, pos, devops, deploy, gateway)
-- `version`: Semantic version from `package.json`
-- `runtime.type`: Runtime type ("bun" or "node")
-- `runtime.version`: Runtime version (e.g., "1.3.4" for Bun, "v25.2.1" for Node)
-- `build.commit`: Full git commit hash
-- `build.branch`: Current git branch name
-- `build.time`: ISO 8601 timestamp of when version.json was updated
-- `metadata.packageManager`: Package manager name ("bun" or "npm")
-- `metadata.packageManagerVersion`: Package manager version
+### `blt version string`
 
-The command automatically detects the component name from your `package.json`:
-- `@codemarc/blt` or `blt-cli` → `cli`
-- `blt-core-pos` → `pos`
-- `blt-core-devops` → `devops`
-- `data` → `data`
-- `deploy` → `deploy`
-- `gateway` → `gateway`
+Print version as a formatted string.
+
+```bash
+blt version string
+blt version string --short
+blt version string --full --date
+```
+
+**Options:** `-d, --date`, `-o, --only`, `-s, --short`, `-f, --full`.
+
+### `blt version sql`
+
+Generate SQL to upsert `version.json` into the settings table.
+
+```bash
+blt version sql
+```
+
+---
+
+## Build Commands
+
+### `blt build schema [name]`
+
+Build schema from DDL files.
+
+```bash
+blt build schema
+blt build schema my_schema
+```
+
+### `blt build data [name]`
+
+Build data from instance directory.
+
+```bash
+blt build data
+blt build data my_instance
+```
+
+---
+
+## Deploy Commands
+
+### `blt deploy schema [name]`
+
+Deploy schema from .sql files.
+
+```bash
+blt deploy schema
+blt deploy schema my_schema
+```
+
+### `blt deploy data [name]`
+
+Deploy data instance from .sql files.
+
+```bash
+blt deploy data
+blt deploy data my_instance
+```
+
+### `blt deploy sql <file>`
+
+Run a single SQL file against the database.
+
+```bash
+blt deploy sql ./migrations/001_init.sql
+```
+
+---
+
+## Bucket Commands (Supabase Storage)
+
+### `blt bucket names`
+
+List all bucket names.
+
+```bash
+blt bucket names
+blt bucket names --format json
+```
+
+**Options:** `-f, --format <format>` — `table` or `json` (default: table).
+
+### `blt bucket list <bucket-name>`
+
+List files in a bucket.
+
+```bash
+blt bucket list my-bucket
+blt bucket list my-bucket --prefix path/ --limit 50
+```
+
+**Options:**
+
+- `-p, --prefix <prefix>` — Path/prefix filter (default: "")
+- `-l, --limit <limit>` — Max results (default: 100)
+- `-f, --format <format>` — `table` or `json` (default: table).
+
+### `blt bucket upload <bucket-name> <local-path> <remote-path>`
+
+Upload a file.
+
+```bash
+blt bucket upload my-bucket ./local.pdf docs/file.pdf
+blt bucket upload my-bucket ./local.pdf docs/file.pdf --upsert
+```
+
+**Options:** `--upsert` — Overwrite if exists (default: false).
+
+### `blt bucket upload-folder <bucket-name> <local-folder>`
+
+Upload all files in a folder.
+
+```bash
+blt bucket upload-folder my-bucket ./public/
+blt bucket upload-folder my-bucket ./public/ -r prefix/
+blt bucket upload-folder my-bucket ./public/ --dry-run
+```
+
+**Options:**
+
+- `-r, --remote-prefix <prefix>` — Remote path prefix (default: "")
+- `--upsert` — Overwrite existing files (default: true)
+- `--dry-run` — Show what would be uploaded without uploading.
+
+### `blt bucket download <bucket-name> <remote-path> <local-path>`
+
+Download a file.
+
+```bash
+blt bucket download my-bucket docs/file.pdf ./local.pdf
+```
+
+### `blt bucket url <bucket-name> <remote-path>`
+
+Get public or signed URL for a file.
+
+```bash
+blt bucket url my-bucket docs/file.pdf
+blt bucket url my-bucket docs/file.pdf --signed --expires-in 7200
+```
+
+**Options:**
+
+- `--signed` — Generate signed URL (default: false)
+- `--expires-in <seconds>` — Signed URL expiry (default: 3600).
+
+---
+
+## Show Commands
+
+### `blt show schema [schema-name]`
+
+Schema information.
+
+```bash
+blt show schema
+blt show schema core
+blt show schema --format json
+```
+
+**Options:** `-f, --format <format>` — `table` or `json` (default: table).
+
+### `blt show counts`
+
+Row counts for all tables.
+
+```bash
+blt show counts
+```
+
+### `blt show env`
+
+Display BLT core environment variables.
+
+```bash
+blt show env
+```
+
+### `blt show db`
+
+Display version from database (same format as version string).
+
+```bash
+blt show db
+blt show db --short
+blt show db --full --date
+```
+
+**Options:** `-d, --date`, `-o, --only`, `-s, --short`, `-f, --full`.
+
+### `blt show repo`
+
+List valid repositories in the current working set.
+
+```bash
+blt show repo
+blt show repo --ssh
+```
+
+**Options:** `-s, --ssh` — Show SSH URLs instead of HTTPS.
+
+---
+
+## Cleanup Commands
+
+### `blt cleanup generated`
+
+Remove generated SQL files and instance SQL directories.
+
+```bash
+blt cleanup generated
+blt cleanup generated -i instance1 -i instance2
+blt cleanup generated --all
+```
+
+**Options:**
+
+- `-i, --instance <instance>` — Instance to clean (repeatable)
+- `-a, --all` — Clean all instances.
+
+### `blt cleanup tags <instance>`
+
+Clean infrequently used tags in YAML files.
+
+```bash
+blt cleanup tags default
+blt cleanup tags joanne --min-count 2 --dry-run
+```
+
+**Options:**
+
+- `-m, --min-count <count>` — Minimum tag count to keep (default: 4)
+- `-d, --dry-run` — Show changes without modifying files.
+
+---
 
 ## Environment Variables
 
-### Environment Checking
+Bucket and database operations typically use Supabase configuration (e.g. from `.env`). The `blt show env` command displays BLT core environment variables.
 
-- `SMASH_KEY`: Required for certain operations (checked by `blt check`)
-
-The `blt check` command looks for a `.env` file in the current directory and verifies environment variable configuration.
+---
 
 ## Troubleshooting
 
-### Sharp library errors (image commands)
+### Image commands (Sharp)
 
-Sharp is an optional dependency. Install manually if needed:
+Sharp is an optional dependency. If image commands fail, install it:
 
 ```bash
 bun add sharp
@@ -240,11 +500,17 @@ bun add sharp
 npm install sharp
 ```
 
+### PDF commands
+
+Ensure `pdf-lib` is installed: `bun install` (or `npm install`). The CLI uses `pdf-lib` ^1.17.1 and works with the Bun runtime.
+
+---
+
 ## Development
 
-This package is built with TypeScript and uses Bun as the runtime.
+Built with TypeScript and Bun.
 
-### Building from Source
+### Build from source
 
 ```bash
 git clone https://github.com/codemarc/blt-cli.git
@@ -254,48 +520,26 @@ bun run build
 bun link
 ```
 
-The build process automatically:
-- Compiles TypeScript to JavaScript
-- Updates `version.json` with current build information
-- Sets execute permissions on the built binary
+Build compiles TypeScript, updates `version.json`, and sets execute permissions on the binary.
 
-### Running in Development
-
-You can run the CLI directly from source using Bun:
+### Run from source
 
 ```bash
-bun run src/blt.ts check
+bun run src/blt.ts image convert ./photo.jpg
+bun run src/blt.ts pdf binder output.pdf a.pdf b.pdf
 ```
 
-### Version Management
-
-The CLI includes a postbuild script that automatically updates `version.json` after each build. The build number is automatically generated and incremented on each update.
-
-You can manually update version information:
-
-```bash
-# From any directory (updates version.json in current directory)
-blt version update
-
-# Or from the CLI project directory, run the script directly
-bun run src/commands/version/update.ts
-```
-
-**Note:** The `blt version update` command works from any directory. It will:
-- Read `package.json` from the current directory
-- Create or update `version.json` in the current directory
-- Use git information from the current directory's repository
-- Generate a new build number for each update
-
-### Testing
+### Tests
 
 ```bash
 bun test
 ```
 
+---
+
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+MIT License — see [LICENSE](LICENSE).
 
 ## Author
 
@@ -307,4 +551,4 @@ https://github.com/codemarc/blt-cli
 
 ## Support
 
-For issues and questions: https://github.com/codemarc/blt-cli/issues
+https://github.com/codemarc/blt-cli/issues
