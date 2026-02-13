@@ -4,6 +4,7 @@ import bucketCommand from "./commands/bucket";
 import buildCommand from "./commands/build";
 import deployCommand from "./commands/deploy";
 import imageCommand from "./commands/image";
+import initCommand from "./commands/init";
 import pdfCommand from "./commands/pdf";
 import versionCommand from "./commands/version";
 import showCommand from "./commands/show";
@@ -27,6 +28,7 @@ program.name("blt")
 	.description("BLT Core Cli");
 
   imageCommand(program);
+  initCommand(program);
   pdfCommand(program);
   versionCommand(program);
   buildCommand(program);
